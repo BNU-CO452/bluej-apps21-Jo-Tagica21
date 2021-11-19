@@ -4,8 +4,8 @@ import java.util.ArrayList;
  * Manage the stock in a business.
  * The stock is described by zero or more Products.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author (Jo Tagica) 
+ * @version (17/11/2021)
  */
 public class StockList
 {
@@ -46,17 +46,36 @@ public class StockList
      */
     public void buyProduct(int productID, int amount)
     {
-    }
-    
+        Product product = findProduct(productID);
+        if (product != null)
+        {
+            if(product.getQuantity() > 0)
+            {
+                product.decreaseQuantity(amount);
+                System.out.println(amount + product.getName() +
+                " successfully purchased");
+            }
+            else
+            {
+                System.out.println(product.getName()+ 
+                " stock space exceeded - sell existing stock");
+            }
+            
+            }
+        }
     /**
      * Find a product to match the product id,
      * if not found return null
      */
     public Product findProduct(int productID)
     {
+        for(Product product : stock)
+        {
+            if(product.getID() == productID)
+                return product;
+        }
         return null;
     }
-    
     
     /**
      * Sell one of the given product.
@@ -65,24 +84,42 @@ public class StockList
      */
     public void sellProduct(int productID)
     {
+        sellProduct(productID,1);
+    }
+    
+    /**
+     * Sell many of the given product.
+     * Show the before and after status of the product.
+     * @param id The ID of the product being sold.
+     */
+    public void sellProduct(int productID, int amount)
+    {
         Product product = findProduct(productID);
         
         if(product != null) 
         {
             if(product.getQuantity() > 0)
             {
-                product.decreaseQuantity(1);
-                
-                // printout message
+                product.decreaseQuantity(amount);
+                System.out.println(amount + product.getName() + 
+                " successfully sold");
             }
-            else
+            else if (product.getQuantity() == 0)
             {
-                // printout message
+                System.out.println(product.getName() + 
+                " currently out of stock");
+            }
+            else 
+            {
+                System.out.println(
+                "Unable to sell desired amount of " + 
+                product.getName() +
+                " - only " + product.getQuantity() + " available");
             }
         }
         else
         {
-            // printout message
+            System.out.println("Product not found");
         }
     }    
 
@@ -133,7 +170,7 @@ public class StockList
     public void printHeading()
     {
         System.out.println();
-        System.out.println(" Peacock's Stock List");
+        System.out.println(" Jo's Stock List");
         System.out.println(" ====================");
         System.out.println();
     }
